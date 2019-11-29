@@ -158,14 +158,15 @@ app.post('/relation' ,function(req,res)
 {
     var name = req.body.name1;
    // var name1 = req.body.name2;
-    var rel = req.body.relation;
+    //var rel = req.body.relation;
 
     session
     .run('MATCH (a:user {name:{nameParam}}), (b:admin) MERGE(a)-[r:issue_book]-(b) RETURN a,b ' ,{nameParam:name})
     .then(function(result)
     {
-        res.render('adminHome')
+       // res.render('adminHome')
         console.log('add relation');
+        //res.send('hi');
 
         session.close();
 
