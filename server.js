@@ -40,20 +40,41 @@ app.post('/action',function(req,res)
     var Name = req.body.name;
     var Email = req.body.email;
     var Pass = req.body.pass;
-
+    
    // console.log(Name);
     session
-    .run('CREATE (n:user {name:{nameParam}, email:{emailParam} ,password:{passParam}}) RETURN n', {nameParam:Name ,emailParam:Email ,passParam:Pass})
+    .run('MATCH (x:user) MERGE(n:user{name:{nameParam}, email:{emailParam} ,password:{passParam}}) RETURN x', {nameParam:Name ,emailParam:Email ,passParam:Pass})
     .then(function(result)
     {
-        res.redirect('/');
-        session.close();
+        var dup;
+        result.records.forEach(function(test)
+        {
+            var read = test._fields[0].properties;
+            if(read.email == Email)
+            {
+                dup = 1;
+            }
+          
+        })
+        if(dup ==1)
+        {
+            console.log('already');
+            res.send('Already Registered');
+           // res.redirect('/');
+        }
+        else{
+            res.redirect('/');
+            console.log('not');
+        }
+       
+        //session.close();
     })
+   
     .catch(function(err)
     {
         console.log(err);
     })
-    res.redirect('/');
+   // res.redirect('/');
 })
 
 
