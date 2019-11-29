@@ -153,20 +153,50 @@ app.post("/view" ,function(req,res)
 })
 
 
-//add relation
+// view relation page
 app.post('/relation' ,function(req,res)
 {
-    var name = req.body.name1;
+   // var name = req.body.name1;
    // var name1 = req.body.name2;
     //var rel = req.body.relation;
 
     session
-    .run('MATCH (a:user {name:{nameParam}}), (b:admin) MERGE(a)-[r:issue_book]-(b) RETURN a,b ' ,{nameParam:name})
+    .run('MATCH (n:user) RETURN n')
     .then(function(result)
     {
-       // res.render('adminHome')
-        console.log('add relation');
-        //res.send('hi');
+        var userRl = [];
+        result.records.forEach(function(record)
+        {
+            userRl.push({
+                id:record._fields[0].identity.low,
+                name:record._fields[0].properties.name,
+                email:record._fields[0].properties.email
+            });
+        });
+        res.render('relationadd' ,{
+            reln:userRl
+        });
+    })
+    .catch(function(err)
+    {
+        console.log(err);
+    })
+})
+
+
+//add relation
+app.post('/viewrelation' ,function(req,res)
+{
+    var name = req.body.name;
+   // var name1 = req.body.name2;
+    var rel = req.body.relation;
+
+    session
+    .run('MATCH (a:user {name:{nameParam}}), (b:admin) MERGE(a)-[r:'+rel+']-(b) RETURN a,b ' ,{nameParam:name})
+    .then(function(result)
+    {
+       
+     res.send('add relation');
 
         session.close();
 

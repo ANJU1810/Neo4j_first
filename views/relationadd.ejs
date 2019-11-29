@@ -1,0 +1,21 @@
+<form action="/viewrelation" method="POST">
+    <center>
+
+
+        <select name="name">
+            <% reln.forEach(function(user){ %>
+                <option>
+                      <%= user.name %> 
+                    <% }) %>
+                </option>
+        </select>
+        <select name="relation">
+            <option>student_of</option>
+            <option>issue_book</option>
+        </select>
+        
+        <input type="submit" value="ADD">
+         
+        </center>
+        
+</form>
