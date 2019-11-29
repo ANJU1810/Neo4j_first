@@ -168,9 +168,9 @@ app.post('/relation' ,function(req,res)
         result.records.forEach(function(record)
         {
             userRl.push({
-                id:record._fields[0].identity.low,
+               // id:record._fields[0].identity.low,
                 name:record._fields[0].properties.name,
-                email:record._fields[0].properties.email
+               // email:record._fields[0].properties.email
             });
         });
         res.render('relationadd' ,{
