@@ -10,9 +10,11 @@
                 </option>
         </select>
         <select name="relation">
-            <option>student_of</option>
-            <option>issue_book</option>
-            <option>staff</option>
+            <% addRn.forEach(function(Relation){ %>
+                <option>
+                    <%= Relation.names %>
+                    <% }) %>
+                </option>
         </select>
         
         <input type="submit" value="ADD">

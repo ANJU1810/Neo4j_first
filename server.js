@@ -177,32 +177,58 @@ app.post("/view" ,function(req,res)
 // view relation page
 app.post('/relation' ,function(req,res)
 {
-   // var name = req.body.name1;
-   // var name1 = req.body.name2;
+    // var name = req.body.name1;
+    // var name1 = req.body.name2;
     //var rel = req.body.relation;
 
     session
     .run('MATCH (n:user) RETURN n')
     .then(function(result)
     {
+       
         var userRl = [];
         result.records.forEach(function(record)
         {
+           
             userRl.push({
                // id:record._fields[0].identity.low,
-                name:record._fields[0].properties.name,
+               name:record._fields[0].properties.name,
+              //  names:record._fields[0].propertiess.names,
                // email:record._fields[0].properties.email
             });
         });
-        res.render('relationadd' ,{
-            reln:userRl
-        });
+        session
+        .run('MATCH (n:Relation) RETURN n')
+        .then(function(result2)
+        {
+            var rlAr = [];
+            result2.records.forEach(function(record)
+            {
+                rlAr.push({
+                    names:record._fields[0].properties.names
+                });
+            });
+            res.render('relationadd' ,{
+                reln:userRl,
+                addRn:rlAr
+            });
+        })
+        .catch(function(err)
+        {
+            console.log(err);
+        })
+
+      
+      
     })
+    
     .catch(function(err)
     {
         console.log(err);
     })
 })
+
+
 
 
 //add relation
@@ -213,7 +239,7 @@ app.post('/viewrelation' ,function(req,res)
     var rel = req.body.relation;
 
     session
-    .run('MATCH (a:user {name:{nameParam}}), (b:admin) MERGE(a)-[r:'+rel+']-(b) RETURN a,b ' ,{nameParam:name})
+    .run('MATCH (a:user {name:{nameParam}}) CREATE UNIQUE(a) -[r:'+rel+']-(b:admin) ' ,{nameParam:name})
     .then(function(result)
     {
        
@@ -227,7 +253,8 @@ app.post('/viewrelation' ,function(req,res)
         console.log(err);
     });
 })
-
+//MATCH (e:Episode {title: "foo"})
+//CREATE UNIQUE (e) <- [:INTERVIEWED_IN] - (p:Person {name:"Lynn Rose"})
 
 
 app.listen(4000);
